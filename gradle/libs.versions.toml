@@ -1,0 +1,94 @@
+[versions]
+agp = "8.5.1"
+kotlin = "1.9.24"
+coreKtx = "1.13.1"
+junit = "4.13.2"
+junitVersion = "1.1.5"
+espressoCore = "3.5.1"
+appcompat = "1.6.1"
+material = "1.10.0"
+activity = "1.8.2"
+constraintlayout = "2.1.4"
+
+kotlinxCoroutines = "1.7.3"
+lifecycle = "2.8.4"
+navigationFragmentKtx = "2.6.0"
+navigationUiKtx = "2.6.0"
+navigationArg = "2.7.7"
+brv="1.6.0"
+lottie = "6.5.0"
+shape = "1.4.7"
+okhttp = "4.12.0"
+loggingInterceptor = "4.12.0"
+okio = "3.6.0"
+retrofit = "2.9.0"
+gson = "2.10.1"
+glide = "4.16.0"
+swiperefreshlayout = "1.1.0"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+
+#coroutine
+jetbrains-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+jetbrains-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+
+#lifecycle
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+
+#navigation
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
+#kapt
+lifecycle-compiler = { group = "androidx.lifecycle", name = "lifecycle-compiler", version.ref = "lifecycle"}
+
+#BRV
+brv = { module = "com.github.liangjingkanji:BRV", name = "BRV", version.ref = "brv" }
+
+#lottie
+airbnb-lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie"}
+
+#shapeofview
+shapeofview = { group = "io.github.florent37", name = "shapeofview", version.ref = "shape"}
+
+#okhttp
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+
+#logging-interceptor
+logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
+
+#okio
+okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
+
+#retrofit
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+#converter-gson
+converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+#gson
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+
+#Glide
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+
+#swiperefreshlayout
+swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+#safeArgs
+safe-args = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigationArg" }
+#parcelize
+kotlin-parcelize = {id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+#kapt
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }

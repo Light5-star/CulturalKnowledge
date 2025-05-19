@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">文常知识</string>
+    <string name="sound">&#xeca5;</string>
+    <string name="pause">&#xea81;</string>
+    <string name="play">&#xea82;</string>
+    <string name="speed_0_75">&#xe65c;</string>
+    <string name="speed_1">&#xe600;</string>
+    <string name="speed_1_25">&#xe86f;</string>
+    <string name="font_size">&#xe854;</string>
+    <string name="speed">&#xe612;</string>
+    <string name="replay">&#xe6de;</string>
+</resources>
