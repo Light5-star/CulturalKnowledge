@@ -9,6 +9,8 @@ import com.xuhh.culturalknowledge.model.ArticleDetail
 import com.xuhh.culturalknowledge.network.RetrofitClient
 import com.xuhh.culturalknowledge.ui.base.BaseActivity
 import kotlinx.coroutines.launch
+import android.os.Handler
+import android.os.Looper
 
 /**
  * 主活动类
@@ -29,6 +31,30 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private lateinit var pagerAdapter: ArticlePagerAdapter
     /** 当前音量 */
     private var currentVolume = 1.0f
+    /** 进度更新Handler */
+    private val progressHandler = Handler(Looper.getMainLooper())
+    /** 进度更新Runnable */
+    private val progressRunnable = object : Runnable {
+        override fun run() {
+            mediaPlayer?.let { player ->
+                if (player.isPlaying) {
+                    val currentPosition = player.currentPosition
+                    // 检查是否播放完成
+                    if (currentPosition >= player.duration) {
+                        // 播放完成，停止更新
+                        progressHandler.removeCallbacks(this)
+                        // 重置高亮
+                        pagerAdapter.updateTextHighlight(-1)
+                        return
+                    }
+                    // 通知适配器更新文字高亮
+                    pagerAdapter.updateTextHighlight(currentPosition)
+                    // 继续监听进度，使用更短的延迟以提高更新频率
+                    progressHandler.postDelayed(this, 50) // 每50毫秒更新一次，确保平滑的高亮效果
+                }
+            }
+        }
+    }
 
     /**
      * 初始化视图绑定
@@ -156,9 +182,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             when {
                 audioUrl == "pause" -> {
                     mediaPlayer?.pause()
+                    // 停止进度更新
+                    progressHandler.removeCallbacks(progressRunnable)
                 }
                 audioUrl == "resume" -> {
                     mediaPlayer?.start()
+                    // 开始进度更新
+                    progressHandler.post(progressRunnable)
                 }
                 audioUrl.startsWith("volume:") -> {
                     // 处理音量调节
@@ -175,6 +205,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                         prepare()
                         setVolume(currentVolume, currentVolume)  // 设置当前音量
                         start()
+                        // 开始进度更新
+                        progressHandler.post(progressRunnable)
                     }
                 }
             }
@@ -188,6 +220,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
      */
     override fun onDestroy() {
         super.onDestroy()
+        // 停止进度更新
+        progressHandler.removeCallbacks(progressRunnable)
         mediaPlayer?.release()
         mediaPlayer = null
     }

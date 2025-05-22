@@ -90,7 +90,7 @@ class VolumeControlView @JvmOverloads constructor(
         /** 文字画笔 */
         private val textPaint = Paint().apply {
             isAntiAlias = true
-            color = ContextCompat.getColor(context, R.color.volume_text)
+            color = ContextCompat.getColor(context, R.color.white)
             textSize = 80f
             textAlign = Paint.Align.CENTER
             typeface = Typeface.DEFAULT_BOLD
@@ -100,10 +100,6 @@ class VolumeControlView @JvmOverloads constructor(
         private val progressRect = RectF()
         /** 背景矩形 */
         private val backgroundRect = RectF()
-        /** 加号按钮矩形 */
-        private val plusButtonRect = RectF()
-        /** 减号按钮矩形 */
-        private val minusButtonRect = RectF()
 
         /** 当前进度（0-100） */
         private var progress = 50

@@ -13,4 +13,7 @@
     <color name="volume_progress">#7E6FFF</color>
     <color name="volume_progress_background">#F2F5FF</color>
     <color name="volume_text">#7E6FFF</color>
+
+    <!-- 文字高亮颜色 -->
+    <color name="text_highlight">#FFA500</color>
 </resources>

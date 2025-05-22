@@ -1,8 +1,12 @@
 package com.xuhh.culturalknowledge.adapter
 
+import android.text.SpannableString
+import android.text.Spannable
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.xuhh.culturalknowledge.R
@@ -18,6 +22,7 @@ import com.xuhh.culturalknowledge.widget.VolumeControlView
  * 1. 显示文章页面的图片和文本内容
  * 2. 处理音频播放控制（播放、暂停、重播）
  * 3. 管理页面切换时的音频播放状态
+ * 4. 处理文字高亮显示
  */
 class ArticlePagerAdapter(
     private val items: List<ContentItem>,
@@ -33,6 +38,10 @@ class ArticlePagerAdapter(
     private var currentVolume = 1.0f
     /** 当前显示的音量控制视图 */
     private var currentVolumeControlView: VolumeControlView? = null
+    /** 当前高亮的文字位置 */
+    private var currentHighlightPosition = -1
+    /** 当前页面的ViewHolder */
+    private var currentViewHolder: PageViewHolder? = null
 
     /**
      * 创建ViewHolder
@@ -73,6 +82,11 @@ class ArticlePagerAdapter(
         if (position != currentPosition) {
             currentPosition = position
             isPlaying = true
+            currentHighlightPosition = -1
+            // 更新当前ViewHolder
+            currentViewHolder = null
+            // 触发重新绑定当前页面
+            notifyItemChanged(position)
             items[position].audioUrl?.let { url ->
                 onPlayAudio(url)
             }
@@ -96,6 +110,42 @@ class ArticlePagerAdapter(
     }
 
     /**
+     * 更新文字高亮显示
+     * @param audioPosition 当前音频播放位置（毫秒）
+     */
+    fun updateTextHighlight(audioPosition: Int) {
+        if (audioPosition < 0) {
+            // 重置所有页面的高亮
+            currentViewHolder?.updateTextHighlight(items[currentPosition], -1)
+            return
+        }
+        
+        // 获取当前页面的内容
+        val currentItem = items.getOrNull(currentPosition) ?: return
+        
+        // 查找当前时间对应的文字位置
+        var newHighlightPosition = -1
+        for (i in currentItem.sentenceByXFList.indices) {
+            val word = currentItem.sentenceByXFList[i]
+            // 将帧数转换为毫秒（1帧 = 1毫秒）
+            val startTime = word.wb
+            val endTime = word.we
+            // 检查当前时间是否在这个词的播放时间范围内
+            if (audioPosition >= startTime && audioPosition <= endTime) {
+                newHighlightPosition = i
+                break
+            }
+        }
+        
+        // 如果高亮位置发生变化，更新显示
+        if (newHighlightPosition != currentHighlightPosition) {
+            currentHighlightPosition = newHighlightPosition
+            // 使用当前页面的ViewHolder更新文字高亮
+            currentViewHolder?.updateTextHighlight(currentItem, newHighlightPosition)
+        }
+    }
+
+    /**
      * 页面视图持有者
      * 负责管理单个页面的视图和交互
      */
@@ -105,12 +155,28 @@ class ArticlePagerAdapter(
         /** 音量控制视图 */
         private var volumeControlView: VolumeControlView? = null
 
+        init {
+            // 在ViewHolder创建时保存引用
+            if (adapterPosition == currentPosition) {
+                currentViewHolder = this
+            }
+        }
+
         /**
          * 绑定页面数据
          * @param item 内容项
          * @param position 位置
          */
         fun bind(item: ContentItem, position: Int) {
+            // 如果是当前页面，更新ViewHolder引用
+            if (position == currentPosition) {
+                currentViewHolder = this
+                // 如果有正在播放的音频，立即更新高亮
+                if (isPlaying && currentHighlightPosition >= 0) {
+                    updateTextHighlight(currentHighlightPosition)
+                }
+            }
+
             // 加载图片
             val imageUrl = if (item.imgUrl.startsWith("http")) {
                 item.imgUrl
@@ -158,6 +224,46 @@ class ArticlePagerAdapter(
          */
         fun updateVolumeControl(volume: Float) {
             volumeControlView?.setProgress((volume * 100).toInt())
+        }
+
+        /**
+         * 更新文字高亮显示
+         * @param item 内容项
+         * @param highlightPosition 高亮位置
+         */
+        fun updateTextHighlight(item: ContentItem, highlightPosition: Int) {
+            if (highlightPosition < 0) {
+                // 如果没有需要高亮的文字，显示原始文本
+                binding.tvContent.text = item.sentence
+                return
+            }
+
+            try {
+                // 创建SpannableString
+                val spannableString = SpannableString(item.sentence)
+                
+                // 计算高亮文字的起始和结束位置
+                var start = 0
+                for (i in 0 until highlightPosition) {
+                    start += item.sentenceByXFList[i].word.length
+                }
+                val end = start + item.sentenceByXFList[highlightPosition].word.length
+
+                // 设置高亮颜色
+                val highlightColor = ContextCompat.getColor(binding.root.context, R.color.text_highlight)
+                spannableString.setSpan(
+                    ForegroundColorSpan(highlightColor),
+                    start,
+                    end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                // 更新文本显示
+                binding.tvContent.text = spannableString
+            } catch (e: Exception) {
+                // 如果发生异常，显示原始文本
+                binding.tvContent.text = item.sentence
+            }
         }
 
         /**
