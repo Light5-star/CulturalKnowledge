@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide
 import com.xuhh.culturalknowledge.R
 import com.xuhh.culturalknowledge.databinding.ItemArticlePageBinding
 import com.xuhh.culturalknowledge.model.ContentItem
-import com.xuhh.culturalknowledge.widget.VolumeControlView
+import com.xuhh.culturalknowledge.ui.view.VolumeControlView
 
 /**
  * 文章页面适配器
@@ -87,9 +87,7 @@ class ArticlePagerAdapter(
             currentViewHolder = null
             // 触发重新绑定当前页面
             notifyItemChanged(position)
-            items[position].audioUrl?.let { url ->
-                onPlayAudio(url)
-            }
+            onPlayAudio(items[position].audioUrl)
             // 隐藏当前显示的音量控制视图
             currentVolumeControlView?.visibility = android.view.View.GONE
             currentVolumeControlView = null

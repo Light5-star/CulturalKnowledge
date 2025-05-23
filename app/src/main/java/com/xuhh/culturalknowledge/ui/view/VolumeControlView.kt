@@ -1,5 +1,6 @@
-package com.xuhh.culturalknowledge.widget
+package com.xuhh.culturalknowledge.ui.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -185,6 +186,7 @@ class VolumeControlView @JvmOverloads constructor(
             canvas.drawText("-", width / 2f, height - buttonPadding, textPaint)
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         override fun onTouchEvent(event: MotionEvent): Boolean {
             when (event.action) {
                 MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
